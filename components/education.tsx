@@ -2,118 +2,146 @@
 
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
-import { GraduationCap, Award, BookOpen } from "lucide-react"
+import { Award, BookOpen, Briefcase, Globe, Users } from "lucide-react"
 
-const educationTimeline = [
-  {
-    year: "1985-1989",
-    degree: "Bachelor of Laws (LL.B.)",
-    institution: "Addis Ababa University",
-    description: "Graduated with highest honors, specializing in constitutional law and human rights.",
-    icon: <BookOpen className="h-6 w-6" />,
-  },
-  {
-    year: "1990-1992",
-    degree: "Master of Laws (LL.M.)",
-    institution: "Harvard Law School, USA",
-    description: "Specialized in comparative constitutional law with focus on federal systems and judicial review.",
-    icon: <GraduationCap className="h-6 w-6" />,
-  },
-  {
-    year: "1995-1999",
-    degree: "Doctor of Juridical Science (S.J.D.)",
-    institution: "University of Oxford, UK",
-    description:
-      "Dissertation on 'Constitutional Development in Post-Revolutionary Ethiopia: Challenges and Prospects'.",
-    icon: <Award className="h-6 w-6" />,
-  },
-  {
-    year: "2005",
-    degree: "Advanced Certificate in Human Rights Law",
-    institution: "International Institute of Human Rights, Strasbourg",
-    description: "Specialized training in international human rights mechanisms and their domestic application.",
-    icon: <BookOpen className="h-6 w-6" />,
-  },
-]
-
-export default function Education() {
+export function Achievements() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
+
+  const achievements = [
+    {
+      title: "Ethiopian Constitutional Scholar of the Decade",
+      year: "2020",
+      organization: "Ethiopian Legal Scholars Association",
+      icon: <BookOpen className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Order of Merit, First Class",
+      year: "2018",
+      organization: "Federal Democratic Republic of Ethiopia",
+      icon: <Award className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Distinguished Service Medal",
+      year: "2015",
+      organization: "Ethiopian Federal Supreme Court",
+      icon: <Briefcase className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Human Rights Defender Award",
+      year: "2012",
+      organization: "African Union Commission",
+      icon: <Users className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "International Rule of Law Medal",
+      year: "2010",
+      organization: "International Bar Association",
+      icon: <Globe className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Legal Education Excellence Award",
+      year: "2008",
+      organization: "Addis Ababa University",
+      icon: <BookOpen className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Distinguished Alumni Award",
+      year: "2005",
+      organization: "Harvard Law School Association",
+      icon: <Award className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Constitutional Drafting Committee Recognition",
+      year: "1995",
+      organization: "Transitional Government of Ethiopia",
+      icon: <Briefcase className="h-8 w-8 text-primary" />,
+    },
+    {
+      title: "Yale Law School International Scholar",
+      year: "1992",
+      organization: "Yale Law School",
+      icon: <BookOpen className="h-8 w-8 text-primary" />,
+    },
+  ]
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.05,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, scale: 0.8 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
+      scale: 1,
+      transition: { duration: 0.4 },
     },
   }
 
   return (
-    <section id="education" className="py-20 md:py-32 bg-muted/30">
-      <div className="container px-4 md:px-6" ref={ref}>
+    <section id="achievements" className="py-20">
+      <div className="section-padding">
         <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Awards & <span className="text-primary">Achievements</span>
+          </h2>
+          <p className="text-foreground/80 max-w-2xl mx-auto">
+            Throughout his distinguished career, Tamirat Bizuneh has received numerous accolades recognizing his
+            contributions to law and justice.
+          </p>
+        </motion.div>
+
+        <motion.div
+          ref={ref}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="space-y-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold font-playfair tracking-tight">Education</h2>
-            <p className="text-xl text-muted-foreground">
-              Academic journey and qualifications that shaped my legal expertise.
-            </p>
-          </motion.div>
+          {achievements.map((achievement, index) => (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="bg-card border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-all"
+            >
+              <div className="flex items-start">
+                <div className="mr-4 mt-1">{achievement.icon}</div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-1">{achievement.title}</h3>
+                  <p className="text-foreground/70 text-sm">
+                    {achievement.organization}, {achievement.year}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-          <motion.div variants={containerVariants} className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-primary/20 transform md:-translate-x-1/2"></div>
-
-            {/* Timeline items */}
-            <div className="space-y-12">
-              {educationTimeline.map((item, index) => (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  className={`relative flex flex-col md:flex-row ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
-                >
-                  {/* Timeline dot */}
-                  <div className="absolute left-4 md:left-1/2 w-8 h-8 rounded-full bg-background border-2 border-primary flex items-center justify-center transform -translate-x-1/2 z-10">
-                    {item.icon}
-                  </div>
-
-                  {/* Content */}
-                  <div className={`ml-12 md:ml-0 md:w-1/2 ${index % 2 === 0 ? "md:pr-12" : "md:pl-12"}`}>
-                    <Card className="overflow-hidden">
-                      <CardContent className="p-6">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-xl font-bold font-playfair">{item.degree}</h3>
-                            <span className="text-sm font-medium bg-primary/10 text-primary px-2 py-1 rounded">
-                              {item.year}
-                            </span>
-                          </div>
-                          <p className="text-lg font-medium">{item.institution}</p>
-                          <p className="text-muted-foreground">{item.description}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mt-16 text-center"
+        >
+          <p className="text-foreground/80 italic">
+            "These recognitions reflect not personal achievement, but the collective progress of Ethiopia's legal
+            community."
+          </p>
+          <p className="text-primary font-medium mt-2">— Tamirat Bizuneh</p>
         </motion.div>
       </div>
     </section>

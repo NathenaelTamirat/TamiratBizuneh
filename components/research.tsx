@@ -2,119 +2,126 @@
 
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Download, ExternalLink } from "lucide-react"
 
-const researchPapers = [
-  {
-    title: "Constitutional Reform in Ethiopia: Historical Context and Future Directions",
-    year: 2022,
-    journal: "Ethiopian Law Review",
-    abstract:
-      "This paper examines the historical development of constitutional law in Ethiopia and proposes frameworks for future reforms that address contemporary challenges.",
-    link: "#",
-  },
-  {
-    title: "Human Rights Protection Mechanisms in the Horn of Africa: A Comparative Analysis",
-    year: 2020,
-    journal: "African Human Rights Law Journal",
-    abstract:
-      "A comprehensive analysis of human rights protection systems across countries in the Horn of Africa, with special focus on institutional frameworks and implementation challenges.",
-    link: "#",
-  },
-  {
-    title: "Judicial Independence and the Rule of Law in Ethiopia's Federal System",
-    year: 2018,
-    journal: "Journal of Ethiopian Legal Studies",
-    abstract:
-      "This study evaluates the state of judicial independence in Ethiopia's federal structure and its implications for the rule of law and access to justice.",
-    link: "#",
-  },
-  {
-    title: "Traditional Dispute Resolution Mechanisms and Their Integration with Formal Legal Systems in Ethiopia",
-    year: 2016,
-    journal: "International Journal of Legal Pluralism",
-    abstract:
-      "An examination of Ethiopia's traditional dispute resolution practices and strategies for their effective integration with the formal justice system.",
-    link: "#",
-  },
-]
-
-export default function Research() {
+export function Research() {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.1 })
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
+
+  const papers = [
+    {
+      title: "Constitutional Reform in Post-Conflict Societies",
+      journal: "Harvard International Law Journal",
+      year: 2018,
+      description:
+        "An analysis of constitutional reform processes in post-conflict African nations, with a focus on Ethiopia's experience.",
+    },
+    {
+      title: "Traditional Justice Systems and Modern Legal Frameworks",
+      journal: "African Journal of Legal Studies",
+      year: 2015,
+      description: "Examining the integration of traditional justice mechanisms within Ethiopia's formal legal system.",
+    },
+    {
+      title: "Human Rights Implementation in Federal Systems",
+      journal: "International Journal of Constitutional Law",
+      year: 2012,
+      description:
+        "A comparative study of human rights implementation in federal systems, with case studies from Ethiopia and Nigeria.",
+    },
+    {
+      title: "Judicial Independence in Emerging Democracies",
+      journal: "Yale Journal of International Law",
+      year: 2010,
+      description:
+        "Analysis of challenges to judicial independence in emerging democracies with recommendations for institutional safeguards.",
+    },
+  ]
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.1,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6 },
+      transition: { duration: 0.5 },
     },
   }
 
   return (
-    <section id="research" className="py-20 md:py-32">
-      <div className="container px-4 md:px-6" ref={ref}>
+    <section id="research" className="py-20">
+      <div className="section-padding">
         <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Research <span className="text-primary">Papers</span>
+          </h2>
+          <p className="text-foreground/80 max-w-2xl mx-auto">
+            A selection of Tamirat Bizuneh's most influential academic publications that have shaped legal discourse in
+            Ethiopia and beyond.
+          </p>
+        </motion.div>
+
+        <motion.div
+          ref={ref}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="space-y-12"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold font-playfair tracking-tight">Research Papers</h2>
-            <p className="text-xl text-muted-foreground">
-              Selected publications showcasing my contributions to legal scholarship.
-            </p>
-          </motion.div>
+          {papers.map((paper, index) => (
+            <motion.div key={index} variants={itemVariants}>
+              <Card className="h-full flex flex-col">
+                <CardHeader>
+                  <CardTitle className="text-xl">{paper.title}</CardTitle>
+                  <CardDescription>
+                    {paper.journal}, {paper.year}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="text-foreground/80">{paper.description}</p>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline" size="sm">
+                    <Download className="mr-2 h-4 w-4" /> PDF
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <ExternalLink className="mr-2 h-4 w-4" /> Cite
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
 
-          <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {researchPapers.map((paper, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg">
-                  <CardHeader>
-                    <CardTitle className="font-playfair">{paper.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {paper.journal}, {paper.year}
-                    </p>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p>{paper.abstract}</p>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Download className="h-4 w-4" />
-                      Download PDF
-                    </Button>
-                    <Button variant="ghost" size="sm" className="gap-2" asChild>
-                      <a href={paper.link} target="_blank" rel="noopener noreferrer">
-                        View Details
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="text-center">
-            <Button variant="outline" size="lg">
-              View All Publications
-            </Button>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
+        >
+          <Button asChild size="lg" id="download">
+            <a href="#" className="inline-flex items-center">
+              <Download className="mr-2 h-4 w-4" /> Download Complete CV
+            </a>
+          </Button>
         </motion.div>
       </div>
     </section>
