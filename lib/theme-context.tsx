@@ -1,51 +1,76 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
 
-type Theme = "light" | "dark" | "gold-dark"
+import { createContext, useContext, useEffect, useState } from "react"
 
-interface ThemeContextType {
+type Theme = "light" | "dark" | "gold-light" | "gold-dark"
+
+type ThemeProviderProps = {
+  children: React.ReactNode
+  defaultTheme?: Theme
+  storageKey?: string
+}
+
+type ThemeProviderState = {
   theme: Theme
   setTheme: (theme: Theme) => void
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
-
-export function ThemeContextProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const [theme, setTheme] = useState<Theme>("light")
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.classList.remove("light", "dark", "gold-dark")
-      document.documentElement.classList.add(savedTheme)
-    } else {
-      // Set default theme if none is saved
-      setTheme("light")
-      document.documentElement.classList.add("light")
-    }
-  }, [])
-
-  const updateTheme = (newTheme: Theme) => {
-    localStorage.setItem("theme", newTheme)
-    document.documentElement.classList.remove("light", "dark", "gold-dark")
-    document.documentElement.classList.add(newTheme)
-    setTheme(newTheme)
-  }
-
-  return <ThemeContext.Provider value={{ theme, setTheme: updateTheme }}>{children}</ThemeContext.Provider>
+const initialState: ThemeProviderState = {
+  theme: "light",
+  setTheme: () => null,
 }
 
-export function useTheme() {
-  const context = useContext(ThemeContext)
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeContextProvider")
+const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+
+export function ThemeProvider({
+  children,
+  defaultTheme = "light",
+  storageKey = "lawyer-theme",
+  ...props
+}: ThemeProviderProps) {
+  const [theme, setTheme] = useState<Theme>(defaultTheme)
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem(storageKey) as Theme | null
+
+    if (savedTheme) {
+      setTheme(savedTheme)
+    }
+  }, [storageKey])
+
+  useEffect(() => {
+    const root = window.document.documentElement
+
+    // Remove all theme classes
+    root.classList.remove("light", "dark", "gold-light", "gold-dark")
+
+    // Add the current theme class
+    root.classList.add(theme)
+
+    // Save the theme to localStorage
+    localStorage.setItem(storageKey, theme)
+  }, [theme, storageKey])
+
+  const value = {
+    theme,
+    setTheme: (theme: Theme) => setTheme(theme),
   }
+
+  return (
+    <ThemeProviderContext.Provider {...props} value={value}>
+      {children}
+    </ThemeProviderContext.Provider>
+  )
+}
+
+export const useTheme = () => {
+  const context = useContext(ThemeProviderContext)
+
+  if (context === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider")
+  }
+
   return context
 }
